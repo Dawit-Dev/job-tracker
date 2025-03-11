@@ -12,9 +12,23 @@ interface Job {
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([])
+  const [editingJob, setEditingJob] = useState<Job | null>(null)
 
   const addJob = (job: Job) => {
     setJobs((prevJobs) => [...prevJobs, job])
+  }
+
+  const deleteJob = (id: number) => {
+    setJobs((prevJobs) => prevJobs.filter((job) => job.id !== id))
+  }
+
+  const startEditing = (job: Job) => {
+    setEditingJob(job)
+  }
+
+  const updateJob = (updatedJob: Job) => {
+    setJobs((prevJobs) => prevJobs.map((job) => (job.id === updatedJob.id ? updatedJob : job)))
+    setEditingJob(null)
   }
 
   return (
@@ -24,7 +38,11 @@ export default function Home() {
         Track your job applications easily.
       </p>
 
-      <JobForm onAddJob={addJob} />
+      <JobForm
+        onAddJob={addJob}
+        editingJob={editingJob}
+        onUpdateJob={updateJob}
+      />
 
       {/* Job List Display */}
       {jobs.length > 0 && (
@@ -34,10 +52,26 @@ export default function Home() {
           </h2>
           <ul className='space-y-2'>
             {jobs.map((job) => (
-              <li key={job.id} className='p-2 border rounded bg-gray-50'>
-                <strong className='text-gray-900'>{job.title}</strong> at
-                <span className="text-blue-700">{job.company}</span>-
-                <span className='text-green-600 font-medium'> {job.status}</span>
+              <li
+                key={job.id}
+                className='p-3 border rounded bg-gray-50 justify-between items-center'
+              >
+                <div>
+                  <strong className='text-gray-900'>{job.title}</strong> at
+                  <span className='text-blue-700'>{job.company}</span>-
+                  <span className='text-green-600 font-medium'>
+                    {/* {" "} */}
+                    {job.status}
+                  </span>
+                </div>
+                <div className="space-x-2">
+                  <button onClick={() => startEditing(job)} className="bg-yellow-500 text-white px-2 py-1 rounded">
+                    Edit
+                  </button>
+                  <button onClick={() => deleteJob(job.id)} className="bg-red-500 text-white px-2 py-1 rounded">
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -46,16 +80,3 @@ export default function Home() {
     </div>
   )
 }
-
-// export default function Home() {
-//   return (
-//     <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4'>
-//       <h1 className='text-4xl font-bold text-gray-900 mb-4'>Job Tracker</h1>
-//       <p className='text-lg text-gray-600 mb-6'>
-//         Track your job applications easily.
-//       </p>
-
-//       <JobForm />
-//     </div>
-//   )
-// }
