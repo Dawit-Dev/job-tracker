@@ -8,6 +8,9 @@ interface Job {
   title: string
   company: string
   status: string
+  name?: string
+  surname?: string
+  cohort?: string
 }
 
 export default function Home() {
@@ -27,7 +30,9 @@ export default function Home() {
   }
 
   const updateJob = (updatedJob: Job) => {
-    setJobs((prevJobs) => prevJobs.map((job) => (job.id === updatedJob.id ? updatedJob : job)))
+    setJobs((prevJobs) =>
+      prevJobs.map((job) => (job.id === updatedJob.id ? updatedJob : job))
+    )
     setEditingJob(null)
   }
 
@@ -50,31 +55,42 @@ export default function Home() {
           <h2 className='text-xl font-semibold text-blue-500 mb-3'>
             Job Applications
           </h2>
-          <ul className='space-y-2'>
-            {jobs.map((job) => (
-              <li
-                key={job.id}
-                className='p-3 border rounded bg-gray-50 justify-between items-center'
-              >
-                <div>
-                  <strong className='text-gray-900'>{job.title}</strong> at
-                  <span className='text-blue-700'>{job.company}</span>-
-                  <span className='text-green-600 font-medium'>
-                    {/* {" "} */}
-                    {job.status}
-                  </span>
-                </div>
-                <div className="space-x-2">
-                  <button onClick={() => startEditing(job)} className="bg-yellow-500 text-white px-2 py-1 rounded">
-                    Edit
-                  </button>
-                  <button onClick={() => deleteJob(job.id)} className="bg-red-500 text-white px-2 py-1 rounded">
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {/* <ul className='space-y-2' */}
+          {jobs.map((job) => (
+            <div
+              key={job.id}
+              className='bg-white p-4 shadow-md rounded-lg mb-2 w-full max-w-md'
+            >
+              {job.name && (
+                <p className='text-black-700 text-black'>
+                  {job.name} {job.surname}
+                </p>
+              )}
+              {job.cohort && (
+                <p className='text-black-500 text-black'>
+                  Cohort: {job.cohort}
+                </p>
+              )}
+              <h3 className='text-lg font-semibold text-black'>
+                {job.title} at {job.company} - {job.status}
+              </h3>
+
+              <div className='flex space-x-2 mt-2'>
+                <button
+                  onClick={() => startEditing(job)}
+                  className='bg-yellow-500 text-white px-2 py-1 rounded'
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteJob(job.id)}
+                  className='bg-red-500 text-white px-2 py-1 rounded'
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
